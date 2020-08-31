@@ -1,0 +1,29 @@
+{
+  "homepage": "https://solid.github.io/profile-viewer-react/",
+  "dependencies": {
+    "@solid/react": "1.6.0",
+    "bulma": "^0.7.5",
+    "node-sass": "^4.12.0",
+    "rdf-namespaces": "^1.8.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-scripts": "2.1.8",
+    "solid-auth-client": "^2.5.0",
+    "tripledoc": "^4.3.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}
