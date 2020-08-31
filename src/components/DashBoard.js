@@ -1,13 +1,38 @@
-import React from "react";
-import { LogoutButton } from "@solid/react";
+import React, { Component } from "react";
+import Footer from "./Footer";
+import NoteList from "./NoteList";
+import { foaf } from "rdf-namespaces";
+import fetchProfile from "../services/FetchProfile";
 
-const dashBoard = (props) => (
-  <>
-  <div>MENU</div>
-  <footer className="footer has-text-right">
-    <LogoutButton className="button" />
-  </footer>
-  </>
-);
+class DashBoard extends Component {
+  state = {
+    solidProfile: null,
+  };
 
-export default dashBoard;
+  componentDidMount() {
+    fetchProfile()
+      .then((profileDoc) => {
+        this.setState({ solidProfile: profileDoc });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+  render() {
+    const profile = this.state.solidProfile;
+    const name = profile ? profile.getString(foaf.name) : null;
+    const title = name ? `Public notes by ${name}` : "Public notes";
+
+    return (
+      <>
+        <section className="section">
+          <h1 className="title">{title}</h1>
+          <NoteList />
+        </section>
+        <Footer />
+      </>
+    );
+  }
+}
+
+export default DashBoard;
