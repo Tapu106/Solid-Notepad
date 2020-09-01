@@ -1,15 +1,27 @@
 import React from "react";
+import addNote from "../services/AddNote";
 import UseNotesList, { getNotes } from "../Containers/UseNotesList";
 import { schema } from "rdf-namespaces";
 
 const notesList = () => {
-  const updatedNotesList = UseNotesList();
+  const NotesList = UseNotesList();
+  const [formContent, setFormContent] = React.useState("");
+  const [updatedNotesList, setUpdatedNotesList] = React.useState();
 
-  if (!updatedNotesList) {
+  if (!NotesList) {
     return null;
   }
-  const notes = getNotes(updatedNotesList);
-  console.log(notes);
+  const notes = getNotes(updatedNotesList || NotesList);
+
+  async function saveNote(event) {
+    event.preventDefault();
+    if (!NotesList) {
+      return;
+    }
+    const updatedDoc = await addNote(formContent, NotesList);
+    setUpdatedNotesList(updatedDoc);
+    setFormContent("");
+  }
 
   const noteElements = notes.sort(byDate).map((note) => (
     <article key={note.asRef()} className="card content">
@@ -17,7 +29,36 @@ const notesList = () => {
     </article>
   ));
 
-  return <section className="section">{noteElements}</section>;
+  return (
+    <>
+      <section className="section">
+        <form onSubmit={saveNote}>
+          <div className="field">
+            <div className="control">
+              <textarea
+                onChange={(e) => {
+                  e.preventDefault();
+                  setFormContent(e.target.value);
+                }}
+                name="note"
+                id="note"
+                className="textarea"
+                value={formContent}
+              />
+            </div>
+          </div>
+          <div className="field">
+            <div className="control">
+              <button type="submit" className="button is-primary">
+                Add note
+              </button>
+            </div>
+          </div>
+        </form>
+      </section>
+      <section className="section">{noteElements}</section>
+    </>
+  );
 };
 
 export default notesList;
