@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { LoggedOut, LoginButton, LoggedIn } from "@solid/react";
-import DashBoard from "./components/DashBoard";
+import DashBoard from './Components/DashBoard';
 import "./App.css";
 
 class App extends Component {
