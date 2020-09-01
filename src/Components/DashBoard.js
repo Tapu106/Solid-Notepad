@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Footer from "./Footer";
-import NoteList from "./NoteList";
+import NotesList from "./NotesList";
 import { foaf } from "rdf-namespaces";
 import fetchProfile from "../services/FetchProfile";
 
@@ -27,7 +27,7 @@ class DashBoard extends Component {
       <>
         <section className="section">
           <h1 className="title">{title}</h1>
-          <NoteList />
+          <NotesList />
         </section>
         <Footer />
       </>

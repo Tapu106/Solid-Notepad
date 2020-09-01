@@ -1,24 +1,26 @@
 import React from "react";
-import { useNotesList, getNotes } from "../Containers/UseNotesList";
+import UseNotesList, { getNotes } from "../Containers/UseNotesList";
 import { schema } from "rdf-namespaces";
 
-
 const notesList = () => {
-  const noteList = useNotesList();
-  const [updatedNotesList, setUpdatedNotesList] = React.useState();
+  const updatedNotesList = UseNotesList();
 
-  if (!noteList) {
+  if (!updatedNotesList) {
     return null;
   }
-  const notes = getNotes(updatedNotesList || noteList);
+  const notes = getNotes(updatedNotesList);
+  console.log(notes);
 
   const noteElements = notes.sort(byDate).map((note) => (
     <article key={note.asRef()} className="card content">
       <pre>{note.getString(schema.text)}</pre>
     </article>
   ));
+
   return <section className="section">{noteElements}</section>;
 };
+
+export default notesList;
 
 function byDate(note1, note2) {
   const date1 = note1.getDateTime(schema.dateCreated);
@@ -29,5 +31,3 @@ function byDate(note1, note2) {
 
   return date2.getTime() - date1.getTime();
 }
-
-export default notesList;

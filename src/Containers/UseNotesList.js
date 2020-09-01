@@ -1,12 +1,12 @@
 import React from "react";
-import { fetchDocument} from "tripledoc";
+import usePublicTypeIndex from "./UsePublicTypeIndex";
 import { solid, schema } from "rdf-namespaces";
-import  usePublicTypeIndex  from "./UsePublicTypeIndex";
-import { initialiseNotesList } from "../services/initialiseNotesList";
+import { fetchDocument } from "tripledoc";
+import InitialiseNotesList from "../services/InitialiseNotesList";
 
-export function useNotesList() {
+const useNotesList = () => {
   const publicTypeIndex = usePublicTypeIndex();
-  const [notesList, setNotesList] = React.useState();
+  const [updatedNotesList, setUpdatedNotesList] = React.useState();
 
   React.useEffect(() => {
     if (!publicTypeIndex) {
@@ -14,33 +14,34 @@ export function useNotesList() {
     }
 
     (async () => {
-      const notesListIndex = publicTypeIndex.findSubject(
+      const notesListEntry = publicTypeIndex.findSubject(
         solid.forClass,
         schema.TextDigitalDocument
       );
-      if (!notesListIndex) {
-        // If no notes document is listed in the public type index, create one:
-        const notesList = await initialiseNotesList();
+      if (!notesListEntry) {
+        const notesList = await InitialiseNotesList();
         if (notesList === null) {
           return;
         }
-        setNotesList(notesList);
+        setUpdatedNotesList(notesList);
         return;
       } else {
-        // If the public type index does list a notes document, fetch it:
-        const notesListUrl = notesListIndex.getRef(solid.instance);
-        if (typeof notesListUrl !== "string") {
+        const notesListRef = notesListEntry.getRef(solid.instance);
+        if (typeof notesListRef !== "string") {
           return;
         }
-        const document = await fetchDocument(notesListUrl);
-        setNotesList(document);
+
+        const document = await fetchDocument(notesListRef);
+        setUpdatedNotesList(document);
       }
     })();
   }, [publicTypeIndex]);
 
-  return notesList;
-}
+  return updatedNotesList;
+};
 
-export function getNotes(notesList) {
-  return notesList.getSubjectsOfType(schema.TextDigitalDocument);
+export default useNotesList;
+
+export function getNotes(updatedNotesList) {
+  return updatedNotesList.getSubjectsOfType(schema.TextDigitalDocument);
 }

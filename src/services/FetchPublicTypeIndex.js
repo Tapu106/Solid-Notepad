@@ -1,19 +1,22 @@
-import fetchProfile from "../services/FetchProfile";
-import { fetchDocument } from "tripledoc";
+import FetchProfile from "../services/FetchProfile";
 import { solid } from "rdf-namespaces";
+import { fetchDocument } from "tripledoc";
 
-const FetchPublicTypeIndex = async () => {
-  const profile = await fetchProfile();
+const fetchPublicTypeIndex = async () => {
+  const profile = await FetchProfile();
+
   if (!profile) {
     return null;
   }
   const publicTypeIndexRef = profile.getRef(solid.publicTypeIndex);
 
-  if (!publicTypeIndexRef) {
+  if (!publicTypeIndexRef || typeof publicTypeIndexRef !== "string") {
     return null;
   }
-  const document = await fetchDocument(publicTypeIndexRef);
-  return document;
+
+  const publicTypeIndex = await fetchDocument(publicTypeIndexRef);
+
+  return publicTypeIndex;
 };
 
-export default FetchPublicTypeIndex;
+export default fetchPublicTypeIndex;
